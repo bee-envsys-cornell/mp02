@@ -47,7 +47,7 @@ Friday, 11/20/26, 9:00pm
 
 ## Overview
 
-In 2013, New York's grid still burned coal, ran the Indian Point nuclear plant, and had almost no solar. In this project you will model how that grid met demand hour by hour, find the price of electricity each hour, and ask what a carbon price would have done: first by changing which plants run, and then by changing what gets built.
+In 2013, New York's grid still burned coal, ran the Indian Point nuclear plant, and had almost no solar. In this project you will model how that grid met demand hour by hour, find the price of electricity each hour, and ask what impact a carbon price would have made: first by changing which plants run, and then by changing what gets built.
 
 ### Instructions
 
@@ -84,7 +84,7 @@ We treat New York as a single node (no transmission limits) and model every hour
 
 **Demand** is NYISO's hourly load for 2013, summed over its eleven zones. It ranges from about 12 GW overnight to a 34 GW summer peak.
 
-**The existing fleet** is New York's summer 2013 generating capability, grouped by type. Each plant type can generate up to its available capacity in each hour. The thermal types (nuclear, coal, steam, combined cycle, and peakers) can also change their output by at most their ramp fraction of capacity from one hour to the next. Hydro, wind, and solar have no ramp limit.
+**The existing fleet** is New York's summer 2013 generating capability, grouped by type. Each plant type can generate up to its available capacity in each hour. The thermal types (nuclear, coal, steam, combined cycle, and combustion turbines) can also change their output by at most their ramp fraction of capacity from one hour to the next. Hydro, wind, and solar have no ramp limit.
 
 | Type | Capacity (MW) | Variable cost (\$/MWh) | CO~2~ (t/MWh) | Ramp (per hour) | Availability |
 |:--|--:|--:|--:|--:|:--|
@@ -93,23 +93,23 @@ We treat New York as a single node (no transmission limits) and model every hour
 | Coal | 1,548 | 24 | 1.00 | 0.70 | 100% |
 | Oil and gas steam | 9,576 | 45 | 0.58 | 0.70 | 100% |
 | Combined cycle | 8,991 | 30 | 0.43 | 0.70 | 100% |
-| Peakers | 4,911 | 40 | 0.55 | 1 | 100% |
+| Combustion turbine | 4,911 | 40 | 0.55 | 1 | 100% |
 | Wind | 1,634 | 0 | 0 | – | profile |
 | Solar | 31.5 | 0 | 0 | – | profile |
 : New York's 2013 generating fleet. {#tbl-fleet}
 
 The fleet file has a ninth row, combined cycle with carbon capture, with no capacity: New York had none in 2013. It generates nothing in Parts 1–4 and becomes an option in Part 5.
 
-**Hydro** can be dispatched in any hour up to its capacity, but its total generation over the year cannot exceed **24,572 GWh**, New York's hydro generation in 2012. Water used in one hour is not available in another.
+**Hydro** can be dispatched in any hour up to its capacity, but its total generation over the year cannot exceed **24,572 GWh**, New York's hydro generation in 2012. Most of that capacity is the New York Power Authority's plants on the Niagara and St. Lawrence rivers. At Niagara, a 1950 treaty with Canada sets how much of the river's flow must go over the falls rather than through the turbines, which limits the water available for power. Water used in one hour is not available in another.
 
 **Wind and solar** follow hourly capacity-factor profiles, rescaled so their annual averages match New York's observed values: 23.4% for wind and 16.5% for solar.
 
 **Non-served energy** is allowed but penalized at \$10,000/MWh, so the problem is always feasible. A good plan should have none.
 
 ::: {.callout-note}
-## Data and simplifications
+## Data and Simplifications
 
-Capacities are from NYISO's *2013 Load & Capacity Data* report (the "Gold Book"), Table III-3a, summer capability; wind and solar use nameplate capacity. Coal, combined cycle, and peaker variable costs are roughly what these plants cost to run at 2012–13 fuel prices, and their emissions are the values used in lecture; the others are course assumptions. The wind capacity factor is from the Gold Book's 2012 energy for wind plants in service all year, and the solar capacity factor is the Long Island Solar Farm's in NYISO's 2024 Gold Book. The ramp fractions are hourly limits of the kind planning models use: nuclear's is a common planning value, coal's and combined cycle's are the rates of the large units in the RTS-GMLC test system (about 4 MW per minute on a 350 MW unit), and steam is assumed to match coal.
+Capacities are from NYISO's *2013 Load & Capacity Data* report (the "Gold Book"), Table III-3a, summer capability; wind and solar use nameplate capacity. Coal, combined cycle, and combustion turbine variable costs are roughly what these plants cost to run at 2012–13 fuel prices, and their emissions are the values used in lecture; the others are course assumptions. The wind capacity factor is from the Gold Book's 2012 energy for wind plants in service all year, and the solar capacity factor is the Long Island Solar Farm's in NYISO's 2024 Gold Book. The ramp fractions are hourly limits: coal's and combined cycle's are the rates of the large units in the RTS-GMLC test system (about 4 MW per minute on a 350 MW unit), steam is assumed to match coal, combustion turbines can reach full output within an hour, and nuclear's is a course assumption.
 
 The model leaves out imports (New York imported roughly 15% of its electricity), pumped storage (1,407 MW), about 400 MW of small biomass and waste plants, and transmission limits between zones.
 :::
@@ -159,7 +159,7 @@ Formulate a linear program that decides how much each plant type generates in ev
 ::: {.markdown .cell}
 #### Problem 1.2 (5 points)
 
-Now add a carbon tax of $\tau$ dollars per tonne of CO~2~. Show how it enters your objective. Then, **by hand**, find the tax at which coal falls behind each of the combined cycle, peaker, and steam plants in the merit order.
+Now add a carbon tax of $\tau$ dollars per tonne of CO~2~. Show how it enters your objective. Then, **by hand**, find the tax at which coal falls behind each of the combined cycle, combustion turbine, and steam plants in the merit order.
 :::
 
 ::: {.markdown .cell}
@@ -185,13 +185,13 @@ Plot hourly generation by plant type, stacked, for one week in January and one w
 ::: {.markdown .cell}
 #### Problem 3.1 (8 points)
 
-The shadow price of each hour's demand constraint is the cost of meeting one more MWh of demand in that hour: the marginal price of electricity. Compute it for every hour and plot the prices sorted from highest to lowest. Count a plant type as setting the price in the hours whose price, rounded to the cent, equals its variable cost. Which plant type sets the price most often, and in how many hours do peakers or steam plants set it?
+The shadow price of each hour's demand constraint is the cost of meeting one more MWh of demand in that hour: the marginal price of electricity. Compute it for every hour and plot the prices sorted from highest to lowest. Count a plant type as setting the price in the hours whose price, rounded to the cent, equals its variable cost. Which plant type sets the price most often, and in how many hours do combustion turbines or steam plants set it?
 :::
 
 ::: {.markdown .cell}
 #### Problem 3.2 (7 points)
 
-Report the shadow price of the hydro budget and interpret it: what would one more MWh of water be worth over the year, and why that value? Be careful with the sign.
+Report the shadow price of the hydro budget and interpret it. Suppose enough extra water could be diverted through the Niagara turbines to generate one more MWh over the year: what would that MWh be worth, and why that value? Be careful with the sign.
 :::
 
 ::: {.markdown .cell}
@@ -201,7 +201,7 @@ Report the shadow price of the hydro budget and interpret it: what would one mor
 ::: {.markdown .cell}
 #### Problem 4.1 (12 points)
 
-Solve the dispatch problem for carbon taxes from \$0 to \$100 per tonne, in steps of \$5 or less, and more finely near the switching points you found in 1.2. Plot annual emissions and each plant type's generation share against the tax. Where do emissions drop, and do the drops match your answer to 1.2? Why does coal keep running after it falls behind combined cycle plants?
+Solve the dispatch problem with carbon taxes of \$0, \$20, \$40, \$60, and \$100 per tonne. Report annual emissions and each fossil plant type's share of generation at each tax in a table. Between which taxes do emissions drop, and do the drops match your answer to 1.2? Why does coal keep running after it falls behind combined cycle plants?
 :::
 
 ::: {.markdown .cell}
@@ -213,12 +213,12 @@ Is there any tax that brings emissions below 40 million tonnes per year by chang
 ::: {.markdown .cell}
 ### Part 5: Building New Capacity (25 points)
 
-This part uses the capacity expansion lecture on November 2. The state can now build six kinds of new capacity: combined cycle, peakers, wind, solar, hydro, and combined cycle with carbon capture. New capacity behaves like the existing plants of the same type: the same variable cost, emissions, and availability, and for the gas plants the same ramp fraction. Two of the six need more detail:
+The state can now build six kinds of new capacity: combined cycle, combustion turbines, wind, solar, hydro, and combined cycle with carbon capture. New capacity behaves like the existing plants of the same type: the same variable cost, emissions, and availability, and for the gas plants the same ramp fraction. Two of the six need more detail:
 
-* **Hydro.** The only sites are existing dams that have no turbines, so at most 295 MW can be built. New hydro comes with water in the same proportion as the existing plants: the annual budget grows by 24,572,000 ÷ 4,276 ≈ 5,746 MWh for each new MW.
+* **Hydro.** The only sites are existing dams that have no turbines, so at most 295 MW can be built. We assume each MW of new hydro generates, on average, as much as each MW of existing hydro: each new MW raises the annual hydro generating capacity by 24,572,000 MWh ÷ 4,276 MW ≈ 5,746 MWh.
 * **Combined cycle with carbon capture.** This is the fleet file's last row. It captures 90% of its CO~2~, so it emits 0.05 t/MWh. It costs \$39/MWh to run, more than a combined cycle plant, because it burns more gas and pays to move and store the CO~2~ it captures.
 
-Annualized costs of new capacity are in `data/new_capacity_costs.csv` (in \$ per MW of capacity per year): `Cost2013` reflects 2013 technology costs, and `CostToday` reflects current ones.
+Annualized costs of new capacity are in `data/new_capacity_costs.csv` (in \$ per MW of capacity per year): `Cost2013` is from 2013 cost estimates and `CostToday` from 2025 ones.
 :::
 
 ```{julia}
@@ -229,11 +229,11 @@ hydro_build_limit = 295   # most new hydro that can be built [MW]
 
 ::: {.markdown .cell}
 ::: {.callout-note}
-## New capacity: data and cautions
+## New Capacity: Data and Cautions
 
 The annualized costs are capital costs from the U.S. Energy Information Administration's 2013 and 2025 reports on new generating plants, spread over 30 years at 7%, plus fixed operating costs. The 295 MW of hydro is Oak Ridge National Laboratory's 2012 estimate of the capacity that New York's dams without turbines could support. Capture's variable cost of \$39/MWh includes about \$4.50/MWh to move and store the 0.45 t of CO~2~ it captures from each MWh, at \$10 per tonne.
 
-Two cautions when you interpret your results. The 2013 cost of capture was an estimate for a kind of plant nobody had built. And part of the rise in hydro's cost is a change in the plant the reports describe: 500 MW in 2013, 100 MW in 2025.
+Keep two things in mind when you interpret your results. First, the 2013 cost of capture is an estimate for a kind of plant that had not been built at commercial scale. Second, the two reports describe different hydro plants, 500 MW in 2013 and 100 MW in 2025, so part of the increase in hydro's cost between them comes from comparing a larger plant with a smaller one, not from a change in what the same plant costs.
 :::
 :::
 
@@ -255,7 +255,7 @@ Cap annual emissions at 40 million tonnes, still with 2013 costs. What does the 
 Repeat 5.2's capped problem with today's costs. What gets built now, and what is the shadow price of the same cap? Then remove the cap and instead impose a carbon tax equal to that shadow price. Compare the two solutions, and explain the result using what you know about shadow prices. What does the change from 5.2 tell you about the role of a carbon price when technology costs fall?
 
 ::: {.callout-tip}
-## Working with JuMP output
+## Working With JuMP Output
 
 `value.(x)` returns a JuMP container; use `value.(x).data` or index it with `value(x[g, t])` to get plain numbers for plotting. End cells that build large sets of variables or constraints with a semicolon to suppress long printed output. For a constraint `c`, `shadow_price(c)` reports how the objective changes as the constraint is relaxed; check its sign against your intuition. `fleet.RampFraction` is `missing` for the types with no ramp limit; test for that with `ismissing`.
 :::
