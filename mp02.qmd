@@ -52,7 +52,7 @@ In 2013, New York's grid still burned coal, ran the Indian Point nuclear plant, 
 ### Instructions
 
 * Students in BEE 4750 may work in groups of 2; students in BEE 5750 work individually.
-* Submit a **report of no more than 4 pages**, not counting figures, tables, code, and references, as a PDF to Gradescope. Answer every numbered question in the report and label each answer with its number (for example, **3.2**), then tag those pages in Gradescope.
+* Submit a **report of no more than 4 pages**, not counting figures, tables, code, and references, as a PDF to Gradescope. Answer every numbered question in the report and label each answer with its number (for example, **4.1**), then tag those pages in Gradescope.
 * Put your code in an appendix or submit the notebook alongside the report. The report should read on its own without it.
 * Parts 1–4 use linear programming, shadow prices, JuMP, and multi-period dispatch (October 14–28 and the October 26 lab). Part 5 uses capacity expansion (November 2).
 
@@ -151,15 +151,9 @@ nse_cost = 10_000           # penalty on non-served energy [$/MWh]
 :::
 
 ::: {.markdown .cell}
-#### Problem 1.1 (10 points)
+#### Problem 1.1 (15 points)
 
 Formulate a linear program that decides how much each plant type generates in every hour of 2013 to meet demand at the lowest total variable cost. Define your decision variables (with units), objective, and constraints: meeting demand each hour, each plant's hourly availability, ramping limits for the thermal types, and the hydro energy budget. Explain each constraint in a sentence.
-:::
-
-::: {.markdown .cell}
-#### Problem 1.2 (5 points)
-
-Now add a carbon tax of $\tau$ dollars per tonne of CO~2~. Show how it enters your objective. Then, **by hand**, find the tax at which coal falls behind each of the combined cycle, combustion turbine, and steam plants in the merit order.
 :::
 
 ::: {.markdown .cell}
@@ -175,21 +169,15 @@ Solve your model in JuMP with no carbon tax. Report the total variable cost, ann
 ::: {.markdown .cell}
 #### Problem 2.2 (10 points)
 
-Plot hourly generation by plant type, stacked, for one week in January and one week in July. Explain the order in which plant types are used, and how the model uses hydro given its annual budget.
+Plot hourly generation by plant type, stacked, for one week in July. Explain how the model uses hydro, given its annual budget.
 :::
 
 ::: {.markdown .cell}
-### Part 3: Prices (15 points)
+### Part 3: The Value of Water (10 points)
 :::
 
 ::: {.markdown .cell}
-#### Problem 3.1 (8 points)
-
-The shadow price of each hour's demand constraint is the cost of meeting one more MWh of demand in that hour: the marginal price of electricity. Compute it for every hour and plot the prices sorted from highest to lowest. Count a plant type as setting the price in the hours whose price, rounded to the cent, equals its variable cost. Which plant type sets the price most often, and in how many hours do combustion turbines or steam plants set it?
-:::
-
-::: {.markdown .cell}
-#### Problem 3.2 (7 points)
+#### Problem 3.1 (10 points)
 
 Report the shadow price of the hydro budget and interpret it. Suppose enough extra water could be diverted through the Niagara turbines to generate one more MWh over the year: what would that MWh be worth, and why that value? Be careful with the sign.
 :::
@@ -199,19 +187,19 @@ Report the shadow price of the hydro budget and interpret it. Suppose enough ext
 :::
 
 ::: {.markdown .cell}
-#### Problem 4.1 (12 points)
+#### Problem 4.1 (15 points)
 
-Solve the dispatch problem with carbon taxes of \$0, \$20, \$40, \$60, and \$100 per tonne. Report annual emissions and each fossil plant type's share of generation at each tax in a table. Between which taxes do emissions drop, and do the drops match your answer to 1.2? Why does coal keep running after it falls behind combined cycle plants?
+Add a carbon tax of $\tau$ dollars per tonne of CO~2~ to your model, and show how it enters your objective. Solve the dispatch problem with taxes of \$0, \$20, \$40, \$60, and \$100 per tonne, and report annual emissions and each fossil plant type's share of generation at each tax in a table. Between which taxes do emissions drop, and which plant type moves ahead of coal in each? Why does coal keep running after it falls behind combined cycle plants?
 :::
 
 ::: {.markdown .cell}
-#### Problem 4.2 (13 points)
+#### Problem 4.2 (10 points)
 
-Is there any tax that brings emissions below 40 million tonnes per year by changing only which existing plants run? Identify the lowest emissions redispatch can reach, and explain what sets that floor. What happens to the average of the year's hourly prices as the tax rises, and who pays it?
+Is there any tax that brings emissions below 40 million tonnes per year by changing only which existing plants run? Identify the lowest emissions redispatch can reach, and explain what sets that floor.
 :::
 
 ::: {.markdown .cell}
-### Part 5: Building New Capacity (25 points)
+### Part 5: Building New Capacity (30 points)
 
 The state can now build six kinds of new capacity: combined cycle, combustion turbines, wind, solar, hydro, and combined cycle with carbon capture. New capacity behaves like the existing plants of the same type: the same variable cost, emissions, and availability, and for the gas plants the same ramp fraction. Two of the six need more detail:
 
@@ -244,13 +232,13 @@ Extend your model to include build decisions, using 2013 costs. Explain what cha
 :::
 
 ::: {.markdown .cell}
-#### Problem 5.2 (8 points)
+#### Problem 5.2 (10 points)
 
 Cap annual emissions at 40 million tonnes, still with 2013 costs. What does the model build, what does the system cost, and what is the shadow price of the cap? Explain what the new plants replace.
 :::
 
 ::: {.markdown .cell}
-#### Problem 5.3 (9 points)
+#### Problem 5.3 (12 points)
 
 Repeat 5.2's capped problem with today's costs. What gets built now, and what is the shadow price of the same cap? Then remove the cap and instead impose a carbon tax equal to that shadow price. Compare the two solutions, and explain the result using what you know about shadow prices. What does the change from 5.2 tell you about the role of a carbon price when technology costs fall?
 
