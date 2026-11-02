@@ -1,6 +1,6 @@
 Type,Cost2013,CostToday
 CombinedCycle,87068,82000
-Combustion turbine,61516,65000
+CombustionTurbine,61516,65000
 Wind,217888,91000
 Solar,336801,70000
 Hydro,250732,604000
